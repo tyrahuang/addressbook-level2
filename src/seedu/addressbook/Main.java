@@ -12,6 +12,7 @@ import seedu.addressbook.ui.TextUi;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import seedu.addressbook.data.exception.FileDeleteException;
 
 
 /**
@@ -108,11 +109,16 @@ public class Main {
             command.setData(addressBook, lastShownList);
             CommandResult result = command.execute();
             storage.save(addressBook);
+            storage.checkFile();
             return result;
-        } catch (Exception e) {
+        } catch (FileDeleteException message){
+        	ui.showToUser(message.getMessage());
+        	return null;
+        } 
+        catch (Exception e) {
             ui.showToUser(e.getMessage());
             throw new RuntimeException(e);
-        }
+        } 
     }
 
     /**
@@ -125,5 +131,7 @@ public class Main {
         return isStorageFileSpecifiedByUser ? new StorageFile(launchArgs[0]) : new StorageFile();
     }
 
-
+    
 }
+
+
